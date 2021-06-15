@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 10px auto;
+      box-shadow: 0 0 4px #ccc;
+      padding: 10px;
+    }
+
+    .container .button-group button {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 5px 10px;
+      border-radius: 3px;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+    .container .button-group button:hover {
+      border-color: lightskyblue;
+      color: lightskyblue;
+    }
+    .message {
+      height: 40px;
+      padding: 0 20px;
+      background: #409eff;
+      border-radius: 3px;
+      font-size: 14px;
+      position: absolute;
+      left: 50%;
+      top: 10px;
+      transform: translate(-50%, -10px);
+      text-align: center;
+      line-height: 40px;
+      color: white;
+      opacity: 0;
+      transition: all 0.5s;
+    }
+
+    .message.success {
+      background: #67c23a;
+    }
+
+    .message.warning {
+      background: #e6a23c;
+    }
+
+    .message.error {
+      background: #f56c6c;
+    }
+
+    .message.info {
+      background: #909399;
+    }
+    .message.show {
+      opacity: 1;
+      transform: translate(-50%, 10px);
+    }
+
+    .message .iconfont {
+      margin-right: 5px;
+      position: relative;
+      top: 1px;
+    }
+  </style>
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_2611383_sk41y40x6x.css" />
+  <body>
+    <div class="container">
+      <h1>消息通知组件</h1>
+      <div class="button-group">
+        <button data-type="success">成功</button>
+        <button data-type="warning">警告</button>
+        <button data-type="info">消息</button>
+        <button data-type="error">错误</button>
+      </div>
+    </div>
+
+    <script>
+      const $$ = (s) => document.querySelectorAll(s);
+
+      class Notification {
+        constructor({ type = "success", text = "这是一条消息" }) {
+          this.type = type;
+          this.text = text;
+
+          this.create();
+          this.mouted();
+        }
+
+        getNode() {
+          return this.$node;
+        }
+
+        create() {
+          this.$node = document.createElement("div");
+          this.$node.classList.add("message");
+          this.$node.classList.add(this.type);
+          const $icon = document.createElement("i");
+          $icon.classList.add("iconfont");
+          $icon.classList.add("icon-" + this.type);
+
+          this.$node.appendChild($icon);
+          this.$node.appendChild(document.createTextNode(this.text));
+        }
+
+        mouted() {
+          document.body.appendChild(this.getNode());
+          setTimeout(() => this.showMessage(), 0);
+        }
+        showMessage() {
+          this.getNode().classList.add("show");
+          setTimeout(this.hideMessage.bind(this), 2000);
+        }
+
+        hideMessage() {
+          this.getNode().classList.remove("show");
+          setTimeout(
+            () => document.body.removeChild(document.querySelector(".message")),
+            3000
+          );
+        }
+      }
+      const $$buttons = [...document.querySelectorAll(".button-group button")];
+      $$buttons[0].onclick = function () {
+        new Notification({
+          type: this.dataset.type,
+          text: "操作成功！",
+        });
+      };
+      $$buttons[1].onclick = function () {
+        new Notification({
+          type: this.dataset.type,
+          text: "给你一个警告！",
+        });
+      };
+      $$buttons[2].onclick = function () {
+        new Notification({
+          type: this.dataset.type,
+          text: "这是一个消息",
+        });
+      };
+      $$buttons[3].onclick = function () {
+        new Notification({
+          type: this.dataset.type,
+          text: "操作失败！",
+        });
+      };
+    </script>
+  </body>
+</html>
